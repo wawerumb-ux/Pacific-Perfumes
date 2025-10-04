@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Essenza - Discover Your Signature Scent</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting.css">
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css">
+    
+    <style>
+        /* CSS Variables for Design System */
+        :root {
+            --color-primary: #1a1a1a;
+            --color-secondary: #f8f6f0;
+            --color-accent: #d4af37;
+            --color-accent-light: #e8d5d0;
+            --color-sage: #a8b5a0;
+            --color-amber: #c9a96e;
+            --font-display: 'Playfair Display', serif;
+            --font-body: 'Inter', sans-serif;
+            --shadow-soft: 0 4px 20px rgba(0,0,0,0.05);
+            --shadow-hover: 0 20px 40px rgba(0,0,0,0.1);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-secondary);
+            color: var(--color-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(248, 246, 240, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-accent);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--color-primary);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--color-accent);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--color-accent);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-icon {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--color-primary);
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-icon:hover {
+            color: var(--color-accent);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--color-accent);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 16px;
+            text-align: center;
+            display: none;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            background: linear-gradient(135deg, var(--color-primary) 0%, #2a2a2a 100%);
+            overflow: hidden;
+        }
+
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('resources/hero-perfume.jpg');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.3;
+            z-index: 1;
+        }
+
+        #particle-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+            z-index: 3;
+        }
+
+        .hero-text {
+            color: var(--color-secondary);
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: rgba(248, 246, 240, 0.8);
+            margin-bottom: 3rem;
+            font-weight: 400;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--color-accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #b8941f;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--color-secondary);
+            border: 2px solid var(--color-secondary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-secondary);
+            color: var(--color-primary);
+        }
+
+        .hero-visual {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-bottle {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.3));
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Quiz Section */
+        .quiz-section {
+            padding: 6rem 2rem;
+            background: var(--color-secondary);
+            position: relative;
+        }
+
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--color-primary);
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 4rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #quiz-container {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 3rem;
+            box-shadow: var(--shadow-soft);
+            margin-bottom: 2rem;
+        }
+
+        .quiz-progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 4px;
+            background: #f0f0f0;
+            border-radius: 2px;
+            margin-right: 1rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-accent), var(--color-amber));
+            border-radius: 2px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .quiz-question-text {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 3rem;
+            color: var(--color-primary);
+        }
+
+        .quiz-answers {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .quiz-answer {
+            background: white;
+            border: 2px solid #f0f0f0;
+            border-radius: var(--radius-md);
+            padding: 2rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .quiz-answer:hover {
+            border-color: var(--color-accent);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .quiz-answer.selected {
+            border-color: var(--color-accent);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .answer-icon {
+            display: block;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .answer-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--color-primary);
+        }
+
+        .quiz-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .quiz-nav-btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-prev {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .quiz-prev:hover:not(.disabled) {
+            background: #e0e0e0;
+        }
+
+        .quiz-next {
+            background: var(--color-accent);
+            color: white;
+        }
+
+        .quiz-next:hover:not(.disabled) {
+            background: #b8941f;
+        }
+
+        .quiz-nav-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Quiz Results */
+        .quiz-results {
+            text-align: center;
+        }
+
+        .quiz-results h3 {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--color-primary);
+        }
+
+        .results-description {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 3rem;
+        }
+
+        .recommendations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .recommendation-card {
+            background: white;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            transition: transform 0.3s ease;
+        }
+
+        .recommendation-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .recommendation-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .recommendation-info {
+            padding: 1.5rem;
+        }
+
+        .recommendation-info h4 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--color-primary);
+        }
+
+        .brand {
+            color: var(--color-accent);
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .description {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .recommendation-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+
+        .quiz-restart {
+            background: transparent;
+            border: 2px solid var(--color-accent);
+            color: var(--color-accent);
+            padding: 1rem 2rem;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-restart:hover {
+            background: var(--color-accent);
+            color: white;
+        }
+
+        /* Featured Collections */
+        .collections-section {
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, #f8f6f0 0%, #f4f1e8 100%);
+        }
+
+        .collections-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .collections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .collection-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .collection-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .collection-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .collection-card:hover .collection-image {
+            transform: scale(1.05);
+        }
+
+        .collection-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 100%);
+            display: flex;
+            align-items: flex-end;
+            padding: 2rem;
+        }
+
+        .collection-info {
+            color: white;
+        }
+
+        .collection-info h3 {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .collection-info p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* Trending Section */
+        .trending-section {
+            padding: 6rem 2rem;
+            background: var(--color-secondary);
+        }
+
+        .trending-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .trending-carousel {
+            margin-top: 4rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin: 0 1rem;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .product-image-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+
+        .wishlist-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .wishlist-btn:hover {
+            background: var(--color-accent);
+            color: white;
+        }
+
+        .wishlist-btn.active {
+            background: var(--color-accent);
+            color: white;
+        }
+
+        .heart-icon {
+            font-size: 1.2rem;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--color-primary);
+        }
+
+        .product-brand {
+            color: var(--color-accent);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-description {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stars {
+            display: flex;
+            gap: 2px;
+        }
+
+        .star {
+            font-size: 0.8rem;
+        }
+
+        .star.filled {
+            color: var(--color-accent);
+        }
+
+        .star.half {
+            color: var(--color-accent);
+            opacity: 0.5;
+        }
+
+        .star.empty {
+            color: #ddd;
+        }
+
+        .rating-text {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-price {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+
+        .add-to-cart {
+            background: var(--color-accent);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-to-cart:hover {
+            background: #b8941f;
+            transform: translateY(-1px);
+        }
+
+        /* Testimonials */
+        .testimonials-section {
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, var(--color-primary) 0%, #2a2a2a 100%);
+            color: var(--color-secondary);
+        }
+
+        .testimonials-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-md);
+            padding: 2.5rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .testimonial-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .author-info h4 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .author-info p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Newsletter */
+        .newsletter-section {
+            padding: 6rem 2rem;
+            background: var(--color-secondary);
+        }
+
+        .newsletter-container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: 2px solid #f0f0f0;
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            background: white;
+            transition: border-color 0.3s ease;
+        }
+
+        .newsletter-input:focus {
+            outline: none;
+            border-color: var(--color-accent);
+        }
+
+        .newsletter-btn {
+            background: var(--color-accent);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-btn:hover {
+            background: #b8941f;
+            transform: translateY(-1px);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--color-primary);
+            color: var(--color-secondary);
+            padding: 3rem 2rem 2rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        /* Animations */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .animate-on-scroll.animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 2rem;
+            background: var(--color-accent);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            z-index: 10000;
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+            
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 2rem;
+            }
+            
+            .hero-actions {
+                justify-content: center;
+            }
+            
+            .quiz-answers {
+                grid-template-columns: 1fr;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+            
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Essenza</a>
+            
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="catalog.html" class="nav-link">Catalog</a></li>
+                <li><a href="#collections" class="nav-link">Collections</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+            </ul>
+            
+            <div class="nav-actions">
+                <button class="nav-icon search-icon">🔍</button>
+                <button class="nav-icon wishlist-icon">♡</button>
+                <button class="nav-icon cart-icon">
+                    🛒
+                    <span class="cart-count">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-background"></div>
+        <canvas id="particle-canvas"></canvas>
+        
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    <span id="hero-typed"></span>
+                </h1>
+                <p class="hero-subtitle">
+                    Discover luxury fragrances crafted by master perfumers. 
+                    Find your signature scent from our curated collection of premium perfumes.
+                </p>
+                <div class="hero-actions">
+                    <a href="#quiz" class="btn btn-primary">Start Your Fragrance Journey</a>
+                    <a href="catalog.html" class="btn btn-secondary">Explore Collection</a>
+                </div>
+            </div>
+            
+            <div class="hero-visual">
+                <img src="resources/hero-bottles.jpg" alt="Luxury Perfume Bottle" class="hero-bottle">
+            </div>
+        </div>
+    </section>
+
+    <!-- Perfume Finder Quiz -->
+    <section id="quiz" class="quiz-section animate-on-scroll">
+        <div class="quiz-container">
+            <h2 class="section-title">Find Your Perfect Fragrance</h2>
+            <p class="section-subtitle">
+                Answer a few questions about your preferences and lifestyle, 
+                and we'll recommend the perfect scents for you.
+            </p>
+            
+            <div id="quiz-container">
+                <div class="quiz-question" data-question-index="0">
+                    <div class="quiz-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 16.67%"></div>
+                        </div>
+                        <span class="progress-text">1 of 6</span>
+                    </div>
+                    
+                    <h3 class="quiz-question-text">What type of scents naturally attract you?</h3>
+                    
+                    <div class="quiz-answers">
+                        <button class="quiz-answer" data-value="fresh">
+                            <span class="answer-icon">🍋</span>
+                            <span class="answer-text">Fresh and clean like citrus or ocean breeze</span>
+                        </button>
+                        <button class="quiz-answer" data-value="oriental">
+                            <span class="answer-icon">🌶️</span>
+                            <span class="answer-text">Warm and spicy like cinnamon or vanilla</span>
+                        </button>
+                        <button class="quiz-answer" data-value="floral">
+                            <span class="answer-icon">🌹</span>
+                            <span class="answer-text">Floral and romantic like roses or jasmine</span>
+                        </button>
+                        <button class="quiz-answer" data-value="woody">
+                            <span class="answer-icon">🌲</span>
+                            <span class="answer-text">Earthy and natural like wood or moss</span>
+                        </button>
+                    </div>
+                    
+                    <div class="quiz-navigation">
+                        <button class="quiz-nav-btn quiz-prev disabled" disabled>Previous</button>
+                        <button class="quiz-nav-btn quiz-next disabled" disabled>Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Collections -->
+    <section id="collections" class="collections-section animate-on-scroll">
+        <div class="collections-container">
+            <h2 class="section-title">Featured Collections</h2>
+            <p class="section-subtitle">
+                Explore our carefully curated fragrance families, each offering a unique olfactory journey.
+            </p>
+            
+            <div class="collections-grid">
+                <div class="collection-card">
+                    <img src="https://kimi-web-img.moonshot.cn/img/dimg.dillards.com/cedbbfd0f37adb3056487289ebf92eae675a055f.jpg" alt="Floral Collection" class="collection-image">
+                    <div class="collection-overlay">
+                        <div class="collection-info">
+                            <h3>Floral Bouquet</h3>
+                            <p>Romantic and feminine fragrances featuring rose, jasmine, and peony</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="collection-card">
+                    <img src="https://kimi-web-img.moonshot.cn/img/cdn.cliqueinc.com/f3b5c4ed62b9ecfe1c8a5145379cb227b8df9302.jpg" alt="Woody Collection" class="collection-image">
+                    <div class="collection-overlay">
+                        <div class="collection-info">
+                            <h3>Woody & Earthy</h3>
+                            <p>Sophisticated scents with sandalwood, cedar, and mysterious oud</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="collection-card">
+                    <img src="resources/product-collection.jpg" alt="Oriental Collection" class="collection-image">
+                    <div class="collection-overlay">
+                        <div class="collection-info">
+                            <h3>Oriental Spice</h3>
+                            <p>Warm and exotic fragrances with vanilla, amber, and precious spices</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="collection-card">
+                    <img src="https://kimi-web-img.moonshot.cn/img/beautyinsider.my/9224d72c01769eedd9c199b75a949a957424dab1.jpg" alt="Fresh Collection" class="collection-image">
+                    <div class="collection-overlay">
+                        <div class="collection-info">
+                            <h3>Fresh & Clean</h3>
+                            <p>Crisp and invigorating scents with citrus, marine, and green notes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trending Now -->
+    <section class="trending-section animate-on-scroll">
+        <div class="trending-container">
+            <h2 class="section-title">Trending Now</h2>
+            <p class="section-subtitle">
+                Discover the most popular fragrances loved by our customers worldwide.
+            </p>
+            
+            <div class="trending-carousel">
+                <div class="splide" id="trending-splide">
+                    <div class="splide__track">
+                        <ul class="splide__list">
+                            <li class="splide__slide">
+                                <div class="product-card" data-product-id="1">
+                                    <div class="product-image-container">
+                                        <img src="https://kimi-web-img.moonshot.cn/img/dimg.dillards.com/cedbbfd0f37adb3056487289ebf92eae675a055f.jpg" alt="Lost Cherry" class="product-image">
+                                        <button class="wishlist-btn" data-product-id="1">
+                                            <span class="heart-icon">♡</span>
+                                        </button>
+                                    </div>
+                                    <div class="product-info">
+                                        <h3 class="product-name">Lost Cherry</h3>
+                                        <p class="product-brand">Tom Ford</p>
+                                        <p class="product-description">Black cherry and cherry liquor with almond, rose, and sandalwood.</p>
+                                        <div class="product-rating">
+                                            <div class="stars">
+                                                <span class="star filled">★</span>
+                                                <span class="star filled">★</span>
+                                                <span class="star filled">★</span>
+                                                <span class="star filled">★</span>
+                                                <span class="star half">★</span>
+                                            </div>
+                                            <span class="rating-text">4.8 (1,247)</span>
+                                        </div>
+                                        <div class="product-footer">
+                                            <span class="product-price">$285</span>
+                                            <button class="add-to-cart" data-product-id="1">Add to Cart</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            
+                            <li class="splide__slide">
+                                <div class="product-card" data-product-id="2">
+                                    <div class="product-image-container">
+                                        <img src="https://kimi-web-img.moonshot.cn/img/cdn.cliqueinc.com/f3b5c4ed62b9ecfe1c8a5145379cb227b8df9302.jpg" alt="Mojave Ghost" class="product-image">
+                                        <button class="wishlist-btn" data-product-id="2">
+                                            <span class="heart-icon">♡</span>
+                                        </button>
+                                    </div>
+                                    <div class="product-info">
+                                        <h3 class="product-name">Mojave Ghost</h3>
+                                        <p class="product-brand">Byredo</p>
+                                        <p class="product-description">Woody notes inspired by the Mojave Desert with musk and cedarwood.</p>
+                                        <div class="product-rating">
+                                            <div class="stars">
+                                                <span class="star filled">★</span>
+                                                <span class="star filled">★</span>
+                                                <span class="star filled">★</span>
+                                                <span class="star filled">★</span>
+                                                <span class="star half">★</span>
+                                            </div>
+                                            <span class="rating-text">4.6 (892)</span>
+                                        </div>
+                                        <div class="product-footer">
+                                            <span class="product-price">$195</span>
+                                            <button class="add-to-cart" data-product-id="2">Add to Cart</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            
+                            <li class="splide__slide">
+                                <div class="product-card" data-product-id="4">
+                                    <div class="product-image-container">
+                                        <img src="https://kimi-web-img.moonshot.cn/img/beautyinsider.my/9224d72c01769eedd9c199b75a949a957424dab1.jpg" alt="Coco Mademoiselle" class="product-image">
+                                        <button class="wishlist-btn" data-product-id="4">
+                                            <span class="heart-icon">♡</span>
+                                        </button>
+                                    </div>
+                                    <div class="product-info">
+                                        <h3 class="product-name">Coco Mademoiselle</h3>
+                                        <p class="product-brand">Chanel</p>
+                                        <p class="product-description">Fresh and sparkling with jasmine, rose, and warm amber base.</p>
+                                        <div class="product-rating">
+                                            <div class="stars">
+                                                <span class="star filled">★</span>
+                                                <span class="star filled">★</span>
+                                                <span class="star filled">★</span>
+                                                <span class="star filled">★</span>
+                                                <span class="star filled">★</span>
+                                            </div>
+                                            <span class="rating-text">4.9 (2,341)</span>
+                                        </div>
+                                        <div class="product-footer">
+                                            <span class="product-price">$165</span>
+                                            <button class="add-to-cart" data-product-id="4">Add to Cart</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            
+                            <li class="splide__slide">
+                                <div class="product-card" data-product-id="5">
+                                    <div class="product-image-container">
+                                        <img src="https://kimi-web-img.moonshot.cn/img/torange.biz/ed26c1ed2a9bc6b0ec916971984198f930a21ec9.jpg" alt="Sauvage" class="product-image">
+                                        <button class="wishlist-btn" data-product-id="5">
+                                            <span class="heart-icon">♡</span>
+                                        </button>
+                                    </div>
+                                    <div class="product-info">
+                                        <h3 class="product-name">Sauvage</h3>
+                                        <p class="product-brand">Dior</p>
+                                        <p class="product-description">Fresh and powerful with bergamot, Sichuan pepper, and ambroxan.</p>
+                                        <div class="product-rating">
+                                            <div class="stars">
+                                                <span class="star filled">★</span>
+                                                <span class="star filled">★</span>
+                                                <span class="star filled">★</span>
+                                                <span class="star filled">★</span>
+                                                <span class="star half">★</span>
+                                            </div>
+                                            <span class="rating-text">4.5 (1,876)</span>
+                                        </div>
+                                        <div class="product-footer">
+                                            <span class="product-price">$135</span>
+                                            <button class="add-to-cart" data-product-id="5">Add to Cart</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials-section animate-on-scroll">
+        <div class="testimonials-container">
+            <h2 class="section-title" style="color: var(--color-secondary);">What Our Customers Say</h2>
+            <p class="section-subtitle" style="color: rgba(248, 246, 240, 0.8);">
+                Real experiences from fragrance lovers who found their perfect scent.
+            </p>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <p class="testimonial-text">
+                        "The perfume finder quiz was spot on! It recommended Tom Ford Lost Cherry, which has become my signature scent. 
+                        I get compliments everywhere I go. The quality and service are exceptional."
+                    </p>
+                    <div class="testimonial-author">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616c9c7d8c8?w=150&h=150&fit=crop&crop=face" alt="Sarah M." class="author-avatar">
+                        <div class="author-info">
+                            <h4>Sarah M.</h4>
+                            <p>New York, NY</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <p class="testimonial-text">
+                        "As someone new to luxury fragrances, I was overwhelmed by choices. Essenza's quiz and detailed descriptions 
+                        helped me find Byredo Mojave Ghost - perfect for my lifestyle and personality."
+                    </p>
+                    <div class="testimonial-author">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face" alt="Michael R." class="author-avatar">
+                        <div class="author-info">
+                            <h4>Michael R.</h4>
+                            <p>Los Angeles, CA</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <p class="testimonial-text">
+                        "The curation here is incredible. Every fragrance tells a story. I discovered niche brands I never knew existed, 
+                        and the packaging and presentation make every purchase feel special."
+                    </p>
+                    <div class="testimonial-author">
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face" alt="Elena K." class="author-avatar">
+                        <div class="author-info">
+                            <h4>Elena K.</h4>
+                            <p>Miami, FL</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="newsletter-section animate-on-scroll">
+        <div class="newsletter-container">
+            <h2 class="section-title">Stay in the Loop</h2>
+            <p class="section-subtitle">
+                Be the first to discover new fragrances, exclusive offers, and perfume insights from our experts.
+            </p>
+            
+            <form class="newsletter-form">
+                <input type="email" class="newsletter-input" placeholder="Enter your email address" required>
+                <button type="submit" class="newsletter-btn">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2024 Essenza. Crafting luxury fragrance experiences with passion and expertise.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="main.js"></script>
+    <script>
+        // Initialize Splide carousel
+        document.addEventListener('DOMContentLoaded', function() {
+            new Splide('#trending-splide', {
+                type: 'loop',
+                perPage: 3,
+                perMove: 1,
+                gap: '2rem',
+                autoplay: true,
+                interval: 4000,
+                pauseOnHover: true,
+                breakpoints: {
+                    1024: {
+                        perPage: 2,
+                    },
+                    768: {
+                        perPage: 1,
+                    }
+                }
+            }).mount();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fragrance Catalog - Essenza</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting.css">
+    
+    <style>
+        /* CSS Variables for Design System */
+        :root {
+            --color-primary: #1a1a1a;
+            --color-secondary: #f8f6f0;
+            --color-accent: #d4af37;
+            --color-accent-light: #e8d5d0;
+            --color-sage: #a8b5a0;
+            --color-amber: #c9a96e;
+            --font-display: 'Playfair Display', serif;
+            --font-body: 'Inter', sans-serif;
+            --shadow-soft: 0 4px 20px rgba(0,0,0,0.05);
+            --shadow-hover: 0 20px 40px rgba(0,0,0,0.1);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-secondary);
+            color: var(--color-primary);
+            line-height: 1.6;
+            padding-top: 80px;
+        }
+
+        /* Navigation (Same as index.html) */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(248, 246, 240, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-accent);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--color-primary);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--color-accent);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--color-accent);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-icon {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--color-primary);
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-icon:hover {
+            color: var(--color-accent);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--color-accent);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 16px;
+            text-align: center;
+            display: none;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, #2a2a2a 100%);
+            color: var(--color-secondary);
+            padding: 4rem 2rem 2rem;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumb {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .breadcrumb a {
+            color: var(--color-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--color-accent);
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 3rem;
+        }
+
+        /* Filters Sidebar */
+        .filters-sidebar {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow-soft);
+            height: fit-content;
+            position: sticky;
+            top: 120px;
+        }
+
+        .filters-title {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            color: var(--color-primary);
+        }
+
+        .filter-group {
+            margin-bottom: 2rem;
+        }
+
+        .filter-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--color-primary);
+            font-size: 0.95rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #f0f0f0;
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            transition: border-color 0.3s ease;
+            background: white;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--color-accent);
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #f0f0f0;
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--color-accent);
+        }
+
+        .price-range {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .price-inputs {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .price-input {
+            flex: 1;
+            padding: 0.5rem;
+            border: 2px solid #f0f0f0;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .price-separator {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .filter-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .filter-chip {
+            background: var(--color-accent);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chip-remove {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .clear-filters {
+            background: transparent;
+            border: 2px solid var(--color-accent);
+            color: var(--color-accent);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .clear-filters:hover {
+            background: var(--color-accent);
+            color: white;
+        }
+
+        /* Products Area */
+        .products-area {
+            min-height: 600px;
+        }
+
+        .products-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .results-info {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .sort-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .sort-label {
+            font-weight: 500;
+            color: var(--color-primary);
+        }
+
+        .sort-select {
+            padding: 0.5rem 1rem;
+            border: 2px solid #f0f0f0;
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        .sort-select:focus {
+            outline: none;
+            border-color: var(--color-accent);
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .view-btn {
+            background: #f0f0f0;
+            border: none;
+            padding: 0.5rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #666;
+        }
+
+        .view-btn.active {
+            background: var(--color-accent);
+            color: white;
+        }
+
+        /* Product Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .product-image-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+
+        .wishlist-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .wishlist-btn:hover {
+            background: var(--color-accent);
+            color: white;
+        }
+
+        .wishlist-btn.active {
+            background: var(--color-accent);
+            color: white;
+        }
+
+        .heart-icon {
+            font-size: 1.2rem;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--color-primary);
+        }
+
+        .product-brand {
+            color: var(--color-accent);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-description {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stars {
+            display: flex;
+            gap: 2px;
+        }
+
+        .star {
+            font-size: 0.8rem;
+        }
+
+        .star.filled {
+            color: var(--color-accent);
+        }
+
+        .star.half {
+            color: var(--color-accent);
+            opacity: 0.5;
+        }
+
+        .star.empty {
+            color: #ddd;
+        }
+
+        .rating-text {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-price {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+
+        .add-to-cart {
+            background: var(--color-accent);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-to-cart:hover {
+            background: #b8941f;
+            transform: translateY(-1px);
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        .loading::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f0f0f0;
+            border-top: 2px solid var(--color-accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--color-primary);
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .empty-state .btn {
+            background: var(--color-accent);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .empty-state .btn:hover {
+            background: #b8941f;
+            transform: translateY(-1px);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius-lg);
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #666;
+            z-index: 1;
+        }
+
+        .product-modal {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .modal-image img {
+            width: 100%;
+            height: auto;
+            border-radius: var(--radius-md);
+        }
+
+        .modal-details h2 {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--color-primary);
+        }
+
+        .modal-brand {
+            color: var(--color-accent);
+            font-weight: 500;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            color: #666;
+        }
+
+        .fragrance-notes {
+            margin-bottom: 2rem;
+        }
+
+        .fragrance-notes h4 {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--color-primary);
+        }
+
+        .notes-pyramid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .note-level {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .note-label {
+            font-weight: 600;
+            color: var(--color-accent);
+            min-width: 60px;
+        }
+
+        .note-text {
+            color: #666;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+        }
+
+        .modal-price {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .filters-sidebar {
+                position: static;
+                order: 2;
+            }
+            
+            .products-area {
+                order: 1;
+            }
+            
+            .product-modal {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+            
+            .products-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .sort-controls {
+                justify-content: space-between;
+            }
+            
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1rem;
+            }
+            
+            .modal-overlay {
+                padding: 1rem;
+            }
+            
+            .product-modal {
+                padding: 1rem;
+            }
+        }
+
+        /* Animations */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .animate-on-scroll.animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 2rem;
+            background: var(--color-accent);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            z-index: 10000;
+            box-shadow: var(--shadow-hover);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Essenza</a>
+            
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="catalog.html" class="nav-link">Catalog</a></li>
+                <li><a href="index.html#collections" class="nav-link">Collections</a></li>
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+            </ul>
+            
+            <div class="nav-actions">
+                <button class="nav-icon search-icon">🔍</button>
+                <button class="nav-icon wishlist-icon">♡</button>
+                <button class="nav-icon cart-icon">
+                    🛒
+                    <span class="cart-count">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <h1>Fragrance Collection</h1>
+        <div class="breadcrumb">
+            <a href="index.html">Home</a>
+            <span>→</span>
+            <span>Catalog</span>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Filters Sidebar -->
+        <aside class="filters-sidebar">
+            <h2 class="filters-title">Filters</h2>
+            
+            <div class="filter-group">
+                <label class="filter-label" for="search-input">Search</label>
+                <input type="text" id="search-input" class="search-input" placeholder="Search fragrances...">
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label" for="category-filter">Fragrance Family</label>
+                <select id="category-filter" class="filter-select" data-filter="category">
+                    <option value="all">All Families</option>
+                    <option value="floral">Floral</option>
+                    <option value="woody">Woody</option>
+                    <option value="oriental">Oriental</option>
+                    <option value="fresh">Fresh</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label" for="brand-filter">Brand</label>
+                <select id="brand-filter" class="filter-select" data-filter="brand">
+                    <option value="all">All Brands</option>
+                    <option value="Tom Ford">Tom Ford</option>
+                    <option value="Byredo">Byredo</option>
+                    <option value="Chanel">Chanel</option>
+                    <option value="Dior">Dior</option>
+                    <option value="Le Labo">Le Labo</option>
+                    <option value="Maison Margiela">Maison Margiela</option>
+                    <option value="Parfums de Marly">Parfums de Marly</option>
+                    <option value="Creed">Creed</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label" for="gender-filter">Gender</label>
+                <select id="gender-filter" class="filter-select" data-filter="gender">
+                    <option value="all">All Genders</option>
+                    <option value="women">Women</option>
+                    <option value="men">Men</option>
+                    <option value="unisex">Unisex</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">Price Range</label>
+                <div class="price-range">
+                    <div class="price-inputs">
+                        <input type="number" id="min-price" class="price-input" placeholder="Min" min="0" max="500">
+                        <span class="price-separator">-</span>
+                        <input type="number" id="max-price" class="price-input" placeholder="Max" min="0" max="500">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="filter-chips" id="active-filters">
+                <!-- Active filters will be displayed here -->
+            </div>
+            
+            <button class="clear-filters" id="clear-filters">Clear All Filters</button>
+        </aside>
+
+        <!-- Products Area -->
+        <section class="products-area">
+            <div class="products-header">
+                <div class="results-info" id="results-count">
+                    Showing 20 fragrances
+                </div>
+                
+                <div class="sort-controls">
+                    <span class="sort-label">Sort by:</span>
+                    <select id="sort-select" class="sort-select">
+                        <option value="popularity">Popularity</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="rating">Rating</option>
+                        <option value="newest">Newest</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="products-grid" id="product-grid">
+                <!-- Products will be loaded here -->
+            </div>
+            
+            <div class="loading" id="loading" style="display: none;">
+                Loading fragrances...
+            </div>
+            
+            <div class="empty-state" id="empty-state" style="display: none;">
+                <h3>No fragrances found</h3>
+                <p>Try adjusting your filters or search terms to find what you're looking for.</p>
+                <button class="btn" onclick="clearAllFilters()">Clear All Filters</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2024 Essenza. Crafting luxury fragrance experiences with passion and expertise.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="main.js"></script>
+    <script>
+        // Catalog-specific functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize product display
+            PerfumeApp.renderProducts(PerfumeApp.products);
+            PerfumeApp.updateResultsCount(PerfumeApp.products.length);
+            
+            // Setup filter event listeners
+            setupFilterListeners();
+            
+            // Setup sort functionality
+            document.getElementById('sort-select').addEventListener('change', handleSort);
+            
+            // Setup clear filters
+            document.getElementById('clear-filters').addEventListener('click', clearAllFilters);
+        });
+
+        function setupFilterListeners() {
+            // Search input
+            const searchInput = document.getElementById('search-input');
+            let searchTimeout;
+            
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    PerfumeApp.filters.search = this.value.toLowerCase();
+                    PerfumeApp.applyFilters();
+                    updateActiveFilters();
+                }, 300);
+            });
+
+            // Filter selects
+            document.querySelectorAll('.filter-select').forEach(select => {
+                select.addEventListener('change', function() {
+                    const filterType = this.dataset.filter;
+                    PerfumeApp.filters[filterType] = this.value;
+                    PerfumeApp.applyFilters();
+                    updateActiveFilters();
+                });
+            });
+
+            // Price inputs
+            const minPriceInput = document.getElementById('min-price');
+            const maxPriceInput = document.getElementById('max-price');
+            
+            minPriceInput.addEventListener('input', function() {
+                PerfumeApp.filters.priceRange[0] = parseInt(this.value) || 0;
+                PerfumeApp.applyFilters();
+                updateActiveFilters();
+            });
+
+            maxPriceInput.addEventListener('input', function() {
+                PerfumeApp.filters.priceRange[1] = parseInt(this.value) || 500;
+                PerfumeApp.applyFilters();
+                updateActiveFilters();
+            });
+        }
+
+        function handleSort() {
+            const sortValue = this.value;
+            let sortedProducts = [...PerfumeApp.products];
+            
+            switch (sortValue) {
+                case 'price-low':
+                    sortedProducts.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-high':
+                    sortedProducts.sort((a, b) => b.price - a.price);
+                    break;
+                case 'rating':
+                    sortedProducts.sort((a, b) => b.rating - a.rating);
+                    break;
+                case 'newest':
+                    sortedProducts.sort((a, b) => b.id - a.id);
+                    break;
+                default:
+                    sortedProducts.sort((a, b) => b.reviews - a.reviews);
+            }
+            
+            PerfumeApp.renderProducts(sortedProducts);
+        }
+
+        function updateActiveFilters() {
+            const activeFiltersContainer = document.getElementById('active-filters');
+            activeFiltersContainer.innerHTML = '';
+            
+            const filters = PerfumeApp.filters;
+            const chips = [];
+            
+            if (filters.search) {
+                chips.push({ type: 'search', label: `Search: ${filters.search}`, value: filters.search });
+            }
+            
+            if (filters.category !== 'all') {
+                chips.push({ type: 'category', label: `Category: ${filters.category}`, value: filters.category });
+            }
+            
+            if (filters.brand !== 'all') {
+                chips.push({ type: 'brand', label: `Brand: ${filters.brand}`, value: filters.brand });
+            }
+            
+            if (filters.gender !== 'all') {
+                chips.push({ type: 'gender', label: `Gender: ${filters.gender}`, value: filters.gender });
+            }
+            
+            if (filters.priceRange[0] > 0 || filters.priceRange[1] < 500) {
+                chips.push({ 
+                    type: 'price', 
+                    label: `Price: $${filters.priceRange[0]} - $${filters.priceRange[1]}`, 
+                    value: 'price' 
+                });
+            }
+            
+            chips.forEach(chip => {
+                const chipElement = document.createElement('div');
+                chipElement.className = 'filter-chip';
+                chipElement.innerHTML = `
+                    ${chip.label}
+                    <button class="chip-remove" onclick="removeFilter('${chip.type}', '${chip.value}')">&times;</button>
+                `;
+                activeFiltersContainer.appendChild(chipElement);
+            });
+        }
+
+        function removeFilter(type, value) {
+            switch (type) {
+                case 'search':
+                    document.getElementById('search-input').value = '';
+                    PerfumeApp.filters.search = '';
+                    break;
+                case 'category':
+                    document.getElementById('category-filter').value = 'all';
+                    PerfumeApp.filters.category = 'all';
+                    break;
+                case 'brand':
+                    document.getElementById('brand-filter').value = 'all';
+                    PerfumeApp.filters.brand = 'all';
+                    break;
+                case 'gender':
+                    document.getElementById('gender-filter').value = 'all';
+                    PerfumeApp.filters.gender = 'all';
+                    break;
+                case 'price':
+                    document.getElementById('min-price').value = '';
+                    document.getElementById('max-price').value = '';
+                    PerfumeApp.filters.priceRange = [0, 500];
+                    break;
+            }
+            
+            PerfumeApp.applyFilters();
+            updateActiveFilters();
+        }
+
+        function clearAllFilters() {
+            PerfumeApp.filters = {
+                search: '',
+                category: 'all',
+                brand: 'all',
+                priceRange: [0, 500],
+                gender: 'all'
+            };
+            
+            document.getElementById('search-input').value = '';
+            document.getElementById('category-filter').value = 'all';
+            document.getElementById('brand-filter').value = 'all';
+            document.getElementById('gender-filter').value = 'all';
+            document.getElementById('min-price').value = '';
+            document.getElementById('max-price').value = '';
+            
+            PerfumeApp.applyFilters();
+            updateActiveFilters();
+        }
+
+        // Override the applyFilters method to handle empty states
+        const originalApplyFilters = PerfumeApp.applyFilters;
+        PerfumeApp.applyFilters = function() {
+            originalApplyFilters.call(this);
+            
+            const productGrid = document.getElementById('product-grid');
+            const emptyState = document.getElementById('empty-state');
+            
+            if (productGrid.children.length === 0) {
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>
